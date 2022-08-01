@@ -1,0 +1,88 @@
+body {
+    margin: 0;
+    background-color: rgb(24, 24, 24);
+}
+
+h2 {
+    font-weight: 500;
+    font-size: 3em;
+    margin-bottom: 0;
+}
+
+h3 {
+    margin-top: 0px;
+    font-weight: 100;
+    font-size: 1.5em;
+    text-align: right;
+}
+
+
+#texts {
+    margin-right: 2em;
+    float: right;
+    color: aliceblue;
+    /* text-align: right; */
+    font-family: 'Poppins', sans-serif;
+}
+
+video {
+    display: none;
+    transition: 0.3s all;
+}
+
+#test {
+    z-index: 99;
+    position: absolute;
+    left: 10%;
+    top: 30%;
+    color: white;
+    font-size: 3em;
+    font-family: 'Courier New', Courier, monospace;
+    transition: all 0.3s;
+}
+
+#test:hover {
+    font-size: 4em;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+#three {
+    position: absolute;
+    z-index: -99;
+    margin: 5%;
+    margin-top: 0;
+    margin-left: 5%;
+    transition: 0.3s;
+}
+
+.directions {
+    font-size: 6em;
+    font-weight: 200;
+    font-family: 'Poppins', sans-serif;
+    border: none;
+    position: absolute;
+    background-color: transparent;
+    color: rgb(200, 200, 200);
+    transition: 0.3s all;
+}
+
+.directions:hover {
+    cursor: pointer;
+    transform: scale(1.2);
+    text-shadow: 0 0 10px white;
+}
+
+.directions:active {
+    cursor: pointer;
+    transform: scale(1.2, 1.0);
+    text-shadow: 0 0 20px rgb(199, 75, 2);
+    color: rgb(199, 75, 2);
+    transition: 0.1s all;
+}
+
+#left {
+    left: 5%;
+}
+
+

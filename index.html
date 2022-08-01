@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="texts">
+        <h2>La Mer</h2>
+        <h3>an interactive sound visualization</h3>
+    </div>
+    <video 
+    src="videos/a.mp4"
+    playsinline
+    webkit-playsinline
+    loop
+    autoplay
+    id="video"
+    ></video>
+    <button class="directions" id="left" onclick="traverse(this)"><</button>
+    <button class="directions" id="right" onclick="traverse(this)">></button>
+    <audio src="bgm.mp3" id="bgm" loop preload="auto"></audio>
+    <script src="https://threejs.org/build/three.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

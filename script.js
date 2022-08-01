@@ -90,6 +90,7 @@ function loadMedia() {
     texts.style.marginRight = "2em";
     texts.style.float = "right";
     texts.style.textAlign = "left";
+    
     document.getElementById('start').style.display = "none";
 }
 bgm.onloadstart = e => {

@@ -54,6 +54,10 @@ const timeline = [
 currentIndex = 0;
 const bgm = document.getElementById("bgm");
 
+bgm.onloadeddata( e => {
+    console.log("loaded");
+})
+
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(80, 1, 0.1, 1000);
 const renderer = new THREE.WebGLRenderer();

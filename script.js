@@ -85,6 +85,7 @@ let domElement = renderer.domElement;
 const bgm = document.getElementById("bgm");
 function loadMedia() { 
     bgm.load();
+    bgm.style.display = "block";
     let texts = document.getElementById("texts");
     texts.style.marginRight = "2em";
     texts.style.float = "right";

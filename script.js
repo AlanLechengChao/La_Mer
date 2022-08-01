@@ -185,10 +185,12 @@ setInterval(() => {
     if (bgm.currentTime > timeline[currentIndex].end) {
         currentIndex = (currentIndex + 1) % timeline.length;
         video.src = `videos/${timeline[currentIndex].video}`;
+        video.load();
     }
     if (bgm.currentTime < timeline[currentIndex].start) {
         currentIndex = (currentIndex - 1) % timeline.length;
         video.src = `videos/${timeline[currentIndex].video}`;
+        video.load();
     }
     
     // console.log("t: ", bgm.currentTime);
@@ -202,10 +204,12 @@ function traverse(e) {
         if (currentIndex < 0) currentIndex += timeline.length;
         bgm.currentTime = timeline[currentIndex].start;
         video.src = `videos/${timeline[currentIndex].video}`;
+        video.load();
     } else {
         currentIndex = (currentIndex + 1) % timeline.length;
         bgm.currentTime = timeline[currentIndex].start;
         video.src = `videos/${timeline[currentIndex].video}`;
+        video.load();
     }
     console.log(currentIndex);
 }

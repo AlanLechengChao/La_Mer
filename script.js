@@ -51,6 +51,11 @@ const timeline = [
     }
 ]
 
+setTimeout(function() {
+    document.getElementById("start").style.opacity = 1;
+}, 500)
+
+
 currentIndex = 0;
 
 const videoFiles = ["a.mp4", "b.mp4", "c.mp4", "d.mp4", "e.mp4", "f.mp4", "g.mp4", "h.mp4"];
@@ -80,13 +85,18 @@ let domElement = renderer.domElement;
 const bgm = document.getElementById("bgm");
 function loadMedia() { 
     bgm.load();
+    let texts = document.getElementById("texts");
+    texts.style.marginRight = "2em";
+    texts.style.float = "right";
+    texts.style.textAlign = "left";
+    document.getElementById('start').style.display = "none";
 }
 bgm.onloadstart = e => {
-    console.log("loaded");
+    document.getElementById('animated').style.display = "block";
     videoDoms.forEach(e => {
         document.body.appendChild(e);
-    })
-    document.body.appendChild(renderer.domElement);
+    });
+    document.getElementById("animated").appendChild(renderer.domElement);
     bgm.play();
 }
 

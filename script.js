@@ -51,6 +51,11 @@ const timeline = [
     }
 ]
 
+let left = document.getElementById("left")
+left.style.top = window.innerHeight * 0.36 + window.innerWidth * 0.05 + "px";
+let right = document.getElementById("right")
+right.style.top = window.innerHeight * 0.36 + window.innerWidth * 0.05 + "px";
+right.style.right = window.innerWidth * 0.85 - window.innerHeight * 0.8 + "px";
 setTimeout(function() {
     document.getElementById("start").style.opacity = 1;
 }, 500)
@@ -80,9 +85,38 @@ const renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerHeight, window.innerHeight);
 renderer.domElement.id = "three";
 let domElement = renderer.domElement;
+const light = new THREE.PointLight(0xffffff, 1, 100, 0.1);
+light.position.set(-3, 0, 20);
+scene.add(light);
+const directionalLight = new THREE.DirectionalLight(0xa4caed, 1);
+scene.add(directionalLight);
+const raycaster = new THREE.Raycaster();
+const pointer = new THREE.Vector2();
+const geometry = new THREE.SphereGeometry(5, 128, 64);
+const count = geometry.attributes.position.count;
+const position_clone = JSON.parse(JSON.stringify(geometry.attributes.position.array));
+const normals_clone = JSON.parse(JSON.stringify(geometry.attributes.normal.array));
 
-// let video = document.getElementById("video");
+const material = new THREE.MeshStandardMaterial(
+    {
+        map: videoTextures[0],
+        side: THREE.FrontSide,
+        toneMapped: true
+    }
+);
+const cube = new THREE.Mesh(geometry, material);
+scene.add(cube);
+cube.rotation.x = 0.05 * Math.PI;
+let now = 0;
+camera.position.z = 10;
+renderer.domElement.addEventListener('pointermove', (e) => {
+
+    pointer.x = ((e.clientX - window.innerWidth * 0.05) / window.innerHeight) * 2 - 1;
+    pointer.y = - (e.clientY / window.innerHeight) * 2 + 1;
+});
+
 const bgm = document.getElementById("bgm");
+
 function loadMedia() { 
     bgm.load();
     bgm.style.display = "block";
@@ -93,131 +127,73 @@ function loadMedia() {
     
     document.getElementById('start').style.display = "none";
 }
+function playPause() {
+    if (bgm.paused) { bgm.play(); videoDoms[currentIndex].play(); }
+    else { bgm.pause(); videoDoms[currentIndex].pause(); }
+}
 bgm.onloadstart = e => {
     document.getElementById('animated').style.display = "block";
     videoDoms.forEach(e => {
         document.body.appendChild(e);
     });
-    document.getElementById("animated").appendChild(renderer.domElement);
     bgm.play();
-}
+    document.getElementById("animated").appendChild(renderer.domElement);
+    const listener = new THREE.AudioListener();
+    camera.add(listener);
+    const audio = new THREE.Audio(listener);
+    const track = audio.setMediaElementSource(bgm);
+    const analyser = new THREE.AudioAnalyser(track, 32);
+    function animate() {
 
-const listener = new THREE.AudioListener();
-camera.add(listener);
-const audio = new THREE.Audio(listener);
-const track = audio.setMediaElementSource(bgm);
-const analyser = new THREE.AudioAnalyser(track, 32);
-// console.log(analyser)
+        const rms = analyser.getAverageFrequency();
+        const damping = rms / 400;
+        now += 0.5 * damping;
+        if (!bgm.paused) {
+            for (let i = 0; i < count; i++) {
+                const ux = geometry.attributes.uv.getX(i) * Math.PI * 16;
+                const uy = geometry.attributes.uv.getY(i) * Math.PI * 16;
 
-const light = new THREE.PointLight(0xffffff, 1, 100, 0.1);
-light.position.set(-3, 0, 20);
-scene.add(light);
+                const xangle = (ux + now);
+                const xsin = Math.sin(xangle) * damping;
+                const yangle = (uy + now);
+                const ycos = Math.cos(yangle) * damping;
 
-const directionalLight = new THREE.DirectionalLight(0xa4caed, 1);
-scene.add(directionalLight);
+                const ix = i * 3;
+                const iy = i * 3 + 1;
+                const iz = i * 3 + 2;
 
-// let videoTexture = new THREE.VideoTexture(video);
-// let playing = false;
-
-function playPause() {
-    if (bgm.paused) {bgm.play(); videoDoms[currentIndex].play();}
-    else {bgm.pause(); videoDoms[currentIndex].pause();}
-}
-
-const geometry = new THREE.SphereGeometry(5,128,64);
-
-
-const count = geometry.attributes.position.count;
-const position_clone = JSON.parse(JSON.stringify(geometry.attributes.position.array));
-const normals_clone = JSON.parse(JSON.stringify(geometry.attributes.normal.array));
-// let damping = 0.1;
-
-
-
-const raycaster = new THREE.Raycaster();
-const pointer = new THREE.Vector2();
-
-
-const material = new THREE.MeshStandardMaterial(
-    {
-        map: videoTextures[0],
-        side: THREE.FrontSide,
-        toneMapped: true
-    }
-);
-
-// const material = new THREE.MeshBasicMaterial( {color: 0xf00000} )
-
-const cube = new THREE.Mesh(geometry, material);
-scene.add(cube);
-cube.rotation.x = 0.05*Math.PI;
-
-
-let now = 0;
-camera.position.z = 10;
-function animate() {
-    // const now = Date.now() / 300;
-    
-    const rms = analyser.getAverageFrequency();
-    const damping = rms / 400;
-    now += 0.5 * damping;
-    if (!bgm.paused) {
-        for (let i = 0; i < count; i++) {
-            const ux = geometry.attributes.uv.getX(i) * Math.PI * 16;
-            const uy = geometry.attributes.uv.getY(i) * Math.PI * 16;
-
-            const xangle = (ux + now);
-            const xsin = Math.sin(xangle) * damping;
-            const yangle = (uy + now);
-            const ycos = Math.cos(yangle) * damping;
-
-            const ix = i * 3;
-            const iy = i * 3 + 1;
-            const iz = i * 3 + 2;
-
-            geometry.attributes.position.setX(i, position_clone[ix] + normals_clone[ix] * (xsin + ycos));
-            geometry.attributes.position.setY(i, position_clone[iy] + normals_clone[iy] * (xsin + ycos));
-            geometry.attributes.position.setZ(i, position_clone[iz] + normals_clone[iz] * (xsin + ycos));
+                geometry.attributes.position.setX(i, position_clone[ix] + normals_clone[ix] * (xsin + ycos));
+                geometry.attributes.position.setY(i, position_clone[iy] + normals_clone[iy] * (xsin + ycos));
+                geometry.attributes.position.setZ(i, position_clone[iz] + normals_clone[iz] * (xsin + ycos));
+            }
+            geometry.computeVertexNormals();
+            geometry.attributes.position.needsUpdate = true;
+            document.body.style.cursor = "pointer";
+            domElement.style.transform = "scale(1.05)";
+            cube.rotation.z += damping / 75;
         }
-        geometry.computeVertexNormals();
-        geometry.attributes.position.needsUpdate = true;
-        document.body.style.cursor = "pointer";
-        domElement.style.transform = "scale(1.05)";
-        cube.rotation.z += damping / 75;
-    }
 
-    raycaster.setFromCamera(pointer, camera);
-    const intersects = raycaster.intersectObject(cube);
-    if (intersects.length != 0) {
-        
-        domElement.addEventListener("mousedown", playPause);
-    } else {
-        document.body.style.cursor = "default";
-        domElement.style.transform = "scale(1)";
-        domElement.removeEventListener("mousedown", playPause);
-    }
-        
+        raycaster.setFromCamera(pointer, camera);
+        const intersects = raycaster.intersectObject(cube);
+        if (intersects.length != 0) {
+
+            domElement.addEventListener("mousedown", playPause);
+        } else {
+            document.body.style.cursor = "default";
+            domElement.style.transform = "scale(1)";
+            domElement.removeEventListener("mousedown", playPause);
+        }
+
         // cube.rotation.y += 0.01;
-    // }
-    requestAnimationFrame(animate);
-    renderer.setClearColor(0xffffff, 0);
-    renderer.render(scene, camera);
+        // }
+        requestAnimationFrame(animate);
+        renderer.setClearColor(0xffffff, 0);
+        renderer.render(scene, camera);
+    }
+    animate();
 }
-animate();
-renderer.domElement.addEventListener('pointermove', (e) => {
-
-    pointer.x = ((e.clientX - window.innerWidth * 0.05) / window.innerHeight) * 2 - 1;
-    pointer.y = - (e.clientY / window.innerHeight) * 2 + 1;
-});
 
 
-
-
-let left = document.getElementById("left")
-left.style.top = window.innerHeight * 0.36 + window.innerWidth * 0.05 + "px";
-let right = document.getElementById("right")
-right.style.top = window.innerHeight * 0.36 + window.innerWidth * 0.05 + "px";
-right.style.right = window.innerWidth * 0.85 - window.innerHeight * 0.8 + "px";
 
 setInterval(() => {
     if (bgm.currentTime > timeline[currentIndex].end) {

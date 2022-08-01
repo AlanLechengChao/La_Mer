@@ -61,7 +61,8 @@ setTimeout(function() {
 }, 500)
 
 
-currentIndex = 0;
+let currentIndex = 0;
+let vidIndex = 0;
 
 const videoFiles = ["a.mp4", "b.mp4", "c.mp4", "d.mp4", "e.mp4", "f.mp4", "g.mp4", "h.mp4"];
 const videoDoms = videoFiles.map((f,i) => {
@@ -128,8 +129,8 @@ function loadMedia() {
     document.getElementById('start').style.display = "none";
 }
 function playPause() {
-    if (bgm.paused) { bgm.play(); videoDoms[currentIndex].play(); }
-    else { bgm.pause(); videoDoms[currentIndex].pause(); }
+    if (bgm.paused) { bgm.play(); videoDoms[vidIndex].play(); }
+    else { bgm.pause(); videoDoms[vidIndex].pause(); }
 }
 bgm.onloadstart = e => {
     document.getElementById('animated').style.display = "block";
@@ -137,6 +138,7 @@ bgm.onloadstart = e => {
         document.body.appendChild(e);
     });
     bgm.play();
+    videoDoms[vidIndex].play();
     document.getElementById("animated").appendChild(renderer.domElement);
     const listener = new THREE.AudioListener();
     camera.add(listener);
@@ -198,7 +200,7 @@ bgm.onloadstart = e => {
 setInterval(() => {
     if (bgm.currentTime > timeline[currentIndex].end) {
         currentIndex = (currentIndex + 1) % timeline.length;
-        let vidIndex = videoFiles.findIndex(e => e == timeline[currentIndex].video);
+        vidIndex = videoFiles.findIndex(e => e == timeline[currentIndex].video);
         material.map = videoTextures[vidIndex];
         // video.src = `videos/${timeline[currentIndex].video}`;
         // video.load();
@@ -207,7 +209,7 @@ setInterval(() => {
         currentIndex = (currentIndex - 1) % timeline.length;
         // video.src = `videos/${timeline[currentIndex].video}`;
         // video.load();
-        let vidIndex = videoFiles.findIndex(e => e == timeline[currentIndex].video);
+        vidIndex = videoFiles.findIndex(e => e == timeline[currentIndex].video);
         material.map = videoTextures[vidIndex];
     }
     
@@ -221,14 +223,14 @@ function traverse(e) {
         currentIndex = (currentIndex - 1) % timeline.length;
         if (currentIndex < 0) currentIndex += timeline.length;
         bgm.currentTime = timeline[currentIndex].start;
-        let vidIndex = videoFiles.findIndex(e => e == timeline[currentIndex].video);
+        vidIndex = videoFiles.findIndex(e => e == timeline[currentIndex].video);
         material.map = videoTextures[vidIndex];
         // video.src = `videos/${timeline[currentIndex].video}`;
         // video.load();
     } else {
         currentIndex = (currentIndex + 1) % timeline.length;
         bgm.currentTime = timeline[currentIndex].start;
-        let vidIndex = videoFiles.findIndex(e => e == timeline[currentIndex].video);
+        vidIndex = videoFiles.findIndex(e => e == timeline[currentIndex].video);
         material.map = videoTextures[vidIndex];
         // video.src = `videos/${timeline[currentIndex].video}`;
         // video.load();

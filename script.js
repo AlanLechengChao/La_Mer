@@ -52,11 +52,22 @@ const timeline = [
 ]
 
 currentIndex = 0;
-const bgm = document.getElementById("bgm");
 
-bgm.onloadeddata( e => {
-    console.log("loaded");
+const videoFiles = ["a.mp4", "b.mp4", "c.mp4", "d.mp4", "e.mp4", "f.mp4", "g.mp4", "h.mp4"];
+const videoDoms = videoFiles.map((f,i) => {
+    let element = document.createElement('video');
+    element.id = `v${i}`;
+    element.src = `videos/${f}`;
+    element.autoplay = true;
+    element.loop = true;
+    element.playsinline = true;
+    element.load();
+    return element;
+});
+const videoTextures = videoDoms.map(e => {
+    return new THREE.VideoTexture(e);
 })
+
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(80, 1, 0.1, 1000);
@@ -64,14 +75,27 @@ const renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerHeight, window.innerHeight);
 renderer.domElement.id = "three";
 let domElement = renderer.domElement;
-document.body.appendChild(renderer.domElement);
+
+// let video = document.getElementById("video");
+const bgm = document.getElementById("bgm");
+function loadMedia() { 
+    bgm.load();
+}
+bgm.onloadstart = e => {
+    console.log("loaded");
+    videoDoms.forEach(e => {
+        document.body.appendChild(e);
+    })
+    document.body.appendChild(renderer.domElement);
+    bgm.play();
+}
 
 const listener = new THREE.AudioListener();
 camera.add(listener);
 const audio = new THREE.Audio(listener);
 const track = audio.setMediaElementSource(bgm);
 const analyser = new THREE.AudioAnalyser(track, 32);
-console.log(analyser)
+// console.log(analyser)
 
 const light = new THREE.PointLight(0xffffff, 1, 100, 0.1);
 light.position.set(-3, 0, 20);
@@ -79,13 +103,13 @@ scene.add(light);
 
 const directionalLight = new THREE.DirectionalLight(0xa4caed, 1);
 scene.add(directionalLight);
-let video = document.getElementById("video");
-let videoTexture = new THREE.VideoTexture(video);
+
+// let videoTexture = new THREE.VideoTexture(video);
 // let playing = false;
 
 function playPause() {
-    if (bgm.paused) {bgm.play(); video.play();}
-    else {bgm.pause(); video.pause();}
+    if (bgm.paused) {bgm.play(); videoDoms[currentIndex].play();}
+    else {bgm.pause(); videoDoms[currentIndex].pause();}
 }
 
 const geometry = new THREE.SphereGeometry(5,128,64);
@@ -96,8 +120,6 @@ const position_clone = JSON.parse(JSON.stringify(geometry.attributes.position.ar
 const normals_clone = JSON.parse(JSON.stringify(geometry.attributes.normal.array));
 // let damping = 0.1;
 
-console.log(count);
-
 
 
 const raycaster = new THREE.Raycaster();
@@ -106,7 +128,7 @@ const pointer = new THREE.Vector2();
 
 const material = new THREE.MeshStandardMaterial(
     {
-        map: videoTexture,
+        map: videoTextures[0],
         side: THREE.FrontSide,
         toneMapped: true
     }
@@ -188,13 +210,17 @@ right.style.right = window.innerWidth * 0.85 - window.innerHeight * 0.8 + "px";
 setInterval(() => {
     if (bgm.currentTime > timeline[currentIndex].end) {
         currentIndex = (currentIndex + 1) % timeline.length;
-        video.src = `videos/${timeline[currentIndex].video}`;
-        video.load();
+        let vidIndex = videoFiles.findIndex(e => e == timeline[currentIndex].video);
+        material.map = videoTextures[vidIndex];
+        // video.src = `videos/${timeline[currentIndex].video}`;
+        // video.load();
     }
     if (bgm.currentTime < timeline[currentIndex].start) {
         currentIndex = (currentIndex - 1) % timeline.length;
-        video.src = `videos/${timeline[currentIndex].video}`;
-        video.load();
+        // video.src = `videos/${timeline[currentIndex].video}`;
+        // video.load();
+        let vidIndex = videoFiles.findIndex(e => e == timeline[currentIndex].video);
+        material.map = videoTextures[vidIndex];
     }
     
     // console.log("t: ", bgm.currentTime);
@@ -207,13 +233,16 @@ function traverse(e) {
         currentIndex = (currentIndex - 1) % timeline.length;
         if (currentIndex < 0) currentIndex += timeline.length;
         bgm.currentTime = timeline[currentIndex].start;
-        video.src = `videos/${timeline[currentIndex].video}`;
-        video.load();
+        let vidIndex = videoFiles.findIndex(e => e == timeline[currentIndex].video);
+        material.map = videoTextures[vidIndex];
+        // video.src = `videos/${timeline[currentIndex].video}`;
+        // video.load();
     } else {
         currentIndex = (currentIndex + 1) % timeline.length;
         bgm.currentTime = timeline[currentIndex].start;
-        video.src = `videos/${timeline[currentIndex].video}`;
-        video.load();
+        let vidIndex = videoFiles.findIndex(e => e == timeline[currentIndex].video);
+        material.map = videoTextures[vidIndex];
+        // video.src = `videos/${timeline[currentIndex].video}`;
+        // video.load();
     }
-    console.log(currentIndex);
 }

@@ -12,21 +12,23 @@
     <title>Document</title>
 </head>
 <body>
+    <audio src="bgm.mp3" id="bgm" loop preload="auto"></audio>
     <div id="texts">
         <h2>La Mer</h2>
         <h3>an interactive sound visualization</h3>
+        <button onclick="loadMedia()">load</button>
     </div>
-    <video 
+    <!-- <video 
     src="videos/a.mp4"
     playsinline
     webkit-playsinline
     loop
     autoplay
     id="video"
-    ></video>
+    ></video> -->
     <button class="directions" id="left" onclick="traverse(this)"><</button>
     <button class="directions" id="right" onclick="traverse(this)">></button>
-    <audio src="bgm.mp3" id="bgm" loop preload="auto"></audio>
+
     <script src="https://threejs.org/build/three.js"></script>
     <script src="script.js"></script>
 </body>

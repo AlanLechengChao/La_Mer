@@ -219,6 +219,7 @@ setInterval(() => {
 
 function traverse(e) {
     if (bgm.paused) bgm.play();
+    if (videoDoms[vidIndex].paused) videoDoms[vidIndex].play();
     if (e.id == "left") {
         currentIndex = (currentIndex - 1) % timeline.length;
         if (currentIndex < 0) currentIndex += timeline.length;

@@ -212,14 +212,13 @@ setInterval(() => {
         vidIndex = videoFiles.findIndex(e => e == timeline[currentIndex].video);
         material.map = videoTextures[vidIndex];
     }
-    
+    if (videoDoms[vidIndex].paused) videoDoms[vidIndex].play();
     // console.log("t: ", bgm.currentTime);
     // console.log("i: ", currentIndex);
 }, 500);
 
 function traverse(e) {
-    if (bgm.paused) bgm.play();
-    if (videoDoms[vidIndex].paused) videoDoms[vidIndex].play();
+    
     if (e.id == "left") {
         currentIndex = (currentIndex - 1) % timeline.length;
         if (currentIndex < 0) currentIndex += timeline.length;
@@ -236,4 +235,6 @@ function traverse(e) {
         // video.src = `videos/${timeline[currentIndex].video}`;
         // video.load();
     }
+    if (bgm.paused) bgm.play();
+    if (videoDoms[vidIndex].paused) videoDoms[vidIndex].play();
 }

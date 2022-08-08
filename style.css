@@ -52,6 +52,7 @@ span {
 }
 
 #texts {
+    z-index: 100;
     /* display: inline-block; */
     transition: 2s all;
     margin: auto;
@@ -77,19 +78,18 @@ video {
 
 
 #three {
-    position: absolute;
+    /* position: absolute; */
     z-index: 1;
-    margin: 0;
-    /* margin-top: 0; */
+    margin: auto;
+    margin-top: 5%;
     /* margin-left: 5%; */
     transition: 0.3s;
 }
 
 #animated {
-    position: relative;
-    width: auto;
+    position: absolute;
     height: 100%;
-    margin-left: 5%;
+    /* margin-left: 5%; */
     display: none;
 }
 
@@ -120,7 +120,13 @@ video {
 }
 
 #left {
-    left: 5%;
+    /* left: 0; */
+    top: calc(50% - 1em);
+}
+
+#right {
+    right: calc(5%);
+    top: calc(50% - 1em);
 }
 
 #bgm {

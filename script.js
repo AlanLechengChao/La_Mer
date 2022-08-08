@@ -50,16 +50,14 @@ const timeline = [
         "video": "g.mp4"
     }
 ]
-
-let left = document.getElementById("left")
-left.style.top = window.innerHeight * 0.36 + window.innerWidth * 0.05 + "px";
-let right = document.getElementById("right")
-right.style.top = window.innerHeight * 0.36 + window.innerWidth * 0.05 + "px";
-right.style.right = window.innerWidth * 0.85 - window.innerHeight * 0.8 + "px";
+document.getElementById("animated").style.width = window.innerHeight + "px";
+let left = document.getElementById("left");
+left.style.left = window.innerHeight * 0.1+"px";
+let right = document.getElementById("right");
+right.style.right = window.innerHeight * 0.1 +"px";
 setTimeout(function() {
     document.getElementById("start").style.opacity = 1;
 }, 500)
-
 
 let currentIndex = 0;
 let vidIndex = 0;
@@ -83,9 +81,10 @@ const videoTextures = videoDoms.map(e => {
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(80, 1, 0.1, 1000);
 const renderer = new THREE.WebGLRenderer();
-renderer.setSize( window.innerHeight, window.innerHeight);
+renderer.setSize(window.innerHeight * 0.9, window.innerHeight * 0.9);
 renderer.domElement.id = "three";
 let domElement = renderer.domElement;
+document.getElementById("animated").appendChild(renderer.domElement);
 const light = new THREE.PointLight(0xffffff, 1, 100, 0.1);
 light.position.set(-3, 0, 20);
 scene.add(light);
@@ -134,12 +133,14 @@ function playPause() {
 }
 bgm.onloadstart = e => {
     document.getElementById('animated').style.display = "block";
+    
+
     videoDoms.forEach(e => {
         document.body.appendChild(e);
     });
     bgm.play();
     videoDoms[vidIndex].play();
-    document.getElementById("animated").appendChild(renderer.domElement);
+    
     const listener = new THREE.AudioListener();
     camera.add(listener);
     const audio = new THREE.Audio(listener);
@@ -170,15 +171,15 @@ bgm.onloadstart = e => {
             }
             geometry.computeVertexNormals();
             geometry.attributes.position.needsUpdate = true;
-            document.body.style.cursor = "pointer";
-            domElement.style.transform = "scale(1.05)";
+            
             cube.rotation.z += damping / 75;
         }
 
         raycaster.setFromCamera(pointer, camera);
         const intersects = raycaster.intersectObject(cube);
         if (intersects.length != 0) {
-
+            document.body.style.cursor = "pointer";
+            domElement.style.transform = "scale(1.05)";
             domElement.addEventListener("mousedown", playPause);
         } else {
             document.body.style.cursor = "default";
@@ -212,9 +213,6 @@ setInterval(() => {
         vidIndex = videoFiles.findIndex(e => e == timeline[currentIndex].video);
         material.map = videoTextures[vidIndex];
     }
-    if (videoDoms[vidIndex].paused) videoDoms[vidIndex].play();
-    // console.log("t: ", bgm.currentTime);
-    // console.log("i: ", currentIndex);
 }, 500);
 
 function traverse(e) {

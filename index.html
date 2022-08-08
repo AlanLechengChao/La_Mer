@@ -12,7 +12,10 @@
     <title>Document</title>
 </head>
 <body>
-    
+    <div id="animated">
+        <button class="directions" id="left" onclick="traverse(this)"><</button>
+        <button class="directions" id="right" onclick="traverse(this)">></button>
+    </div>
     <div id="texts">
         <div id="inner">
             <h2>La Mer <span>Claude Debussy</span></h2>
@@ -22,10 +25,7 @@
             <button id="start" onclick="loadMedia()">start</button>
         </div> 
     </div>
-    <div id="animated">
-        <button class="directions" id="left" onclick="traverse(this)"><</button>
-        <button class="directions" id="right" onclick="traverse(this)">></button>
-    </div>
+    
     
 
     <script src="https://threejs.org/build/three.js"></script>
